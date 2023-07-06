@@ -3,6 +3,7 @@ import { OrdersList, Order } from "./OrdersList";
 import { Box, Button, Modal } from "@mui/material";
 import { OrderForm } from "./OrderForm";
 import { fetchAPI } from "@/utils";
+import { AxiosResponse } from "axios";
 
 const style = {
   position: "absolute" as "absolute",
@@ -21,9 +22,11 @@ export const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = () => {
-    fetchAPI("/api/v2/orders").then((resp) => {
-      setOrders(resp.data.orders);
-    });
+    fetchAPI("/api/v2/orders")
+      .then((resp) => {
+        setOrders((resp as AxiosResponse).data.orders);
+      })
+      .catch((err) => setOrders([]));
   };
 
   const onClose = () => {

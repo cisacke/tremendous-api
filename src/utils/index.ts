@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 const config = {
   headers: {
@@ -6,26 +7,15 @@ const config = {
   },
 };
 
-export const fetchAPI = async (endpoint: string) => {
-  const resp = await axios.get(endpoint, config);
+export const fetchAPI = async (endpoint: string) =>
+  await axios
+    .get(endpoint, config)
+    .catch((err: AxiosError) => toast(err.message));
 
-  return resp;
-};
-
-export const postAPI = async (endpoint: string, data: any) => {
-  const resp = await axios.post(endpoint, data, config);
-
-  return resp;
-};
-
-export const resendReward = async (id: string) =>
-  await axios.post(`/api/v2/rewards/${id}/resend`, {}, config);
-
-export const approveReward = async (id: string) =>
-  await axios.post(`/api/v2/rewards/${id}/approve`, {}, config);
-
-export const approveOrder = async (id: string) =>
-  await axios.post(`/api/v2/orders/${id}/approve`, {}, config);
+export const postAPI = async (endpoint: string, data: any) =>
+  await axios.post(endpoint, data, config).catch((err: AxiosError) => {
+    toast(err.message);
+  });
 
 export const formatDollars = (num: number) => {
   return `$${num.toFixed(2)}`;

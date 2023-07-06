@@ -9,6 +9,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 
 type Product = {
@@ -26,7 +27,7 @@ export const Products = () => {
 
   useEffect(() => {
     fetchAPI("/api/v2/products").then((resp) => {
-      setProducts(resp.data.products);
+      setProducts((resp as AxiosResponse).data.products);
     });
   }, []);
 

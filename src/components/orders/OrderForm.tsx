@@ -15,6 +15,7 @@ import {
   validationSchema,
 } from "./orderFormUtils";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { AxiosResponse } from "axios";
 
 export type FundingSource = {
   id: string;
@@ -39,11 +40,11 @@ export const OrderForm: FC<OrderFormProps> = ({ onClose }) => {
 
   useEffect(() => {
     fetchAPI("/api/v2/funding_sources").then((resp) => {
-      setFundingSources(resp.data.funding_sources);
+      setFundingSources((resp as AxiosResponse).data.funding_sources);
     });
 
     fetchAPI("/api/v2/campaigns").then((resp) => {
-      setCampaigns(resp.data.campaigns);
+      setCampaigns((resp as AxiosResponse).data.campaigns);
     });
   }, []);
 
@@ -87,7 +88,9 @@ export const OrderForm: FC<OrderFormProps> = ({ onClose }) => {
             required
             options={deliveryMethodOptions}
           />
-          <FormLabel>Recipients</FormLabel>
+          <FormLabel sx={{ mb: 1, display: "inline-block" }}>
+            Recipients
+          </FormLabel>
           <FieldArray
             name="recipients"
             render={(arrayHelpers: ArrayHelpers) => (

@@ -1,4 +1,4 @@
-import { approveOrder, formatDollars } from "@/utils";
+import { formatDollars, postAPI } from "@/utils";
 import {
   IconButton,
   Paper,
@@ -19,10 +19,10 @@ export type Order = {
   id: string;
   created_at: string;
   status: string;
-  payment: {
+  payment?: {
     total: number;
   };
-  rewards: Array<{}>;
+  rewards?: Array<{}>;
 };
 
 interface OrdersListProps {
@@ -51,8 +51,14 @@ export const OrdersList: FC<OrdersListProps> = ({ orders, refetchOrders }) => (
           >
             <TableCell>{order.id}</TableCell>
             <TableCell>{order.status}</TableCell>
-            <TableCell>{order.rewards.length}</TableCell>
-            <TableCell>{formatDollars(order.payment.total)}</TableCell>
+            <TableCell>
+              {order.rewards?.length ? order.rewards.length : "N/A"}
+            </TableCell>
+            <TableCell>
+              {order?.payment?.total
+                ? formatDollars(order.payment.total)
+                : "N/A"}
+            </TableCell>
             <TableCell>
               {DateTime.fromISO(order.created_at).toLocaleString(
                 DateTime.DATETIME_FULL
@@ -63,7 +69,9 @@ export const OrdersList: FC<OrdersListProps> = ({ orders, refetchOrders }) => (
                 <Tooltip title="Approve Order">
                   <IconButton
                     onClick={() => {
-                      approveOrder(order.id).then(refetchOrders);
+                      postAPI(`/api/v2/orders/${order.id}/approve`, {}).then(
+                        refetchOrders
+                      );
                       toast("Order approved.", {
                         position: "top-right",
                         autoClose: 5000,

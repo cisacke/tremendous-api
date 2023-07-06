@@ -1,4 +1,4 @@
-import { approveReward, formatDollars, resendReward } from "@/utils";
+import { formatDollars, postAPI } from "@/utils";
 import {
   IconButton,
   Paper,
@@ -78,12 +78,14 @@ export const RewardsList: FC<RewardsListProps> = ({
                   <Tooltip title="Resend Reward">
                     <IconButton
                       onClick={() =>
-                        resendReward(reward.id).then(() => {
-                          toast("Reward resent.", {
-                            position: "top-right",
-                            autoClose: 5000,
-                          });
-                        })
+                        postAPI(`/api/v2/rewards/${reward.id}/resend`, {}).then(
+                          () => {
+                            toast("Reward resent.", {
+                              position: "top-right",
+                              autoClose: 5000,
+                            });
+                          }
+                        )
                       }
                     >
                       <ForwardToInboxIcon />
@@ -94,7 +96,9 @@ export const RewardsList: FC<RewardsListProps> = ({
                 <Tooltip title="Approve Reward">
                   <IconButton
                     onClick={() => {
-                      approveReward(reward.id).then(refetchRewards);
+                      postAPI(`/api/v2/rewards/${reward.id}/approve`, {}).then(
+                        refetchRewards
+                      );
                       toast("Reward approved.", {
                         position: "top-right",
                         autoClose: 5000,
